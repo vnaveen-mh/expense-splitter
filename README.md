@@ -6,8 +6,9 @@ settlements and an exportable DOT graph of all obligations.
 
 Demo videos:
 
-[![ADK Agent Demo](images/adk-agent-demo-thumb.png)](https://www.youtube.com/watch?v=qaERm_77g3g)
-[![Claude Desktop Demo](images/claude-desktop-demo-thumb.png)](https://www.youtube.com/watch?v=mtDUmyAv6IU)
+![ADK Agent Demo](images/adk-agent-demo.gif)
+
+![Claude Desktop Demo](images/claude-desktop-demo.gif)
 
 ## Why this exists
 
