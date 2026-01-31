@@ -23,8 +23,8 @@ func init() {
 
 // Create validates the name and creates a new group if it doesn't already exist.
 func Create(name string) (*Group, error) {
-	displayName := strings.TrimSpace(name)
-	key := normalizeName(displayName)
+	displayName := normalizeGroupName(name)
+	key := displayName
 
 	groupMgr.mu.Lock()
 	defer groupMgr.mu.Unlock()
@@ -45,7 +45,7 @@ func Get(name string) (*Group, bool) {
 	groupMgr.mu.Lock()
 	defer groupMgr.mu.Unlock()
 
-	group, exists := groupMgr.store[normalizeName(name)]
+	group, exists := groupMgr.store[normalizeGroupName(name)]
 	return group, exists
 }
 
@@ -81,7 +81,7 @@ func ListGroups() []*Group {
 
 // Delete removes a group by name and reports whether it was deleted.
 func Delete(name string) bool {
-	name = strings.TrimSpace(name)
+	name = normalizeGroupName(name)
 	if name == "" {
 		return false
 	}
@@ -89,7 +89,7 @@ func Delete(name string) bool {
 	groupMgr.mu.Lock()
 	defer groupMgr.mu.Unlock()
 
-	key := normalizeName(name)
+	key := name
 	if _, exists := groupMgr.store[key]; !exists {
 		return false
 	}

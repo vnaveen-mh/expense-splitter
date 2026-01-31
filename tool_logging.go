@@ -32,3 +32,18 @@ func logToolExit(name string, start time.Time, err error, result *mcp.CallToolRe
 	}
 	log.Printf("Tool %s exit: status=%s duration=%s", name, status, time.Since(start))
 }
+
+func logToolExitWithDetail(name string, start time.Time, err error, result *mcp.CallToolResult, output any, detail string, args ...any) {
+	if detail == "" {
+		logToolExit(name, start, err, result, output)
+		return
+	}
+	status := "ok"
+	if err != nil {
+		status = "error"
+	} else if result != nil && output == nil {
+		status = "cancelled"
+	}
+	allArgs := append([]any{name, status, time.Since(start)}, args...)
+	log.Printf("Tool %s exit: status=%s duration=%s "+detail, allArgs...)
+}

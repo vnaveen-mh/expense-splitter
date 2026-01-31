@@ -45,7 +45,7 @@ func main() {
 	mcp.AddTool(server, &mcp.Tool{Name: "get_group_info", Description: "Get group info or details"}, GetGroupInfo)
 	mcp.AddTool(server, &mcp.Tool{
 		Name:        "add_expense",
-		Description: "Add expense to the group paid by a person",
+		Description: "Add expense to the group paid by a person. This tool is thread-safe and supports concurrent expense submissions - multiple expenses can be added in parallel for better performance.",
 		InputSchema: addExpenseInputSchema,
 	},
 		AddExpense)

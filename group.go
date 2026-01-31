@@ -9,7 +9,7 @@ import (
 )
 
 type CreateGroupInput struct {
-	Name string `json:"name,omitempty" jsonschema_description:"create a group with the given name"`
+	Name string `json:"name,omitempty" jsonschema_description:"create a group with the given name. Spaces will be automatically converted to hyphens (e.g., 'vegas trip' becomes 'vegas-trip'). If a group with this name already exists, the tool will return an error."`
 }
 
 type CreateGroupOutput struct {
@@ -110,7 +110,7 @@ func GetGroupInfo(ctx context.Context, req *mcp.CallToolRequest, input *GetGroup
 	}
 	start := logToolEnter("GetGroupInfo", "name=%q", name)
 	defer func() {
-		logToolExit("GetGroupInfo", start, err, result, output)
+		logToolExitWithDetail("GetGroupInfo", start, err, result, output, "output=%+v", output)
 	}()
 	if name == "" {
 		// Get the session so we can talk back to the client.

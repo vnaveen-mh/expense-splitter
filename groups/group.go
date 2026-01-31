@@ -54,7 +54,7 @@ type EdgeMetadata struct {
 // It initializes an interanl graph data struct
 func NewGroup(name string) (*Group, error) {
 	// validate name
-	name = strings.TrimSpace(name)
+	name = normalizeGroupName(name)
 	if !groupNamePattern.MatchString(name) {
 		return nil, fmt.Errorf("group name must start with a letter, match %q, and be [1, 32] chars long", groupNamePattern.String())
 	}
