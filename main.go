@@ -49,6 +49,12 @@ func main() {
 		InputSchema: addExpenseInputSchema,
 	},
 		AddExpense)
+	mcp.AddTool(server, &mcp.Tool{
+		Name:        "save_report",
+		Description: "Save a markdown report to disk under reports/ with a unique id",
+		InputSchema: saveReportInputSchema,
+	},
+		SaveReport)
 
 	// Create the streamable HTTP handler
 	handler := mcp.NewStreamableHTTPHandler(func(*http.Request) *mcp.Server {

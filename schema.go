@@ -95,3 +95,16 @@ var addExpenseInputSchema = map[string]any{
 		},
 	},
 }
+
+var saveReportInputSchema = map[string]any{
+	"type":                 "object",
+	"additionalProperties": false,
+	"properties": map[string]any{
+		"markdown": map[string]any{
+			"type":        "string",
+			"description": "Report content in markdown format",
+			"minLength":   1,
+		},
+	},
+	"required": []any{"markdown"},
+}
