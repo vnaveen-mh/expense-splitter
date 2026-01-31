@@ -35,8 +35,15 @@ type ListGroupsOutput struct {
 
 type ListGroupsInput struct{}
 
-func CreateGroup(ctx context.Context, req *mcp.CallToolRequest, input *CreateGroupInput) (*mcp.CallToolResult, *CreateGroupOutput, error) {
-	name := input.Name
+func CreateGroup(ctx context.Context, req *mcp.CallToolRequest, input *CreateGroupInput) (result *mcp.CallToolResult, output *CreateGroupOutput, err error) {
+	name := ""
+	if input != nil {
+		name = input.Name
+	}
+	start := logToolEnter("CreateGroup", "name=%q", name)
+	defer func() {
+		logToolExit("CreateGroup", start, err, result, output)
+	}()
 	if name == "" {
 		// Get the session so we can talk back to the client.
 		ss, _ := req.GetSession().(*mcp.ServerSession)
@@ -77,7 +84,7 @@ func CreateGroup(ctx context.Context, req *mcp.CallToolRequest, input *CreateGro
 	if err != nil {
 		return nil, nil, err
 	}
-	output := &CreateGroupOutput{
+	output = &CreateGroupOutput{
 		GroupName: group.Name,
 		CreatedAt: fmt.Sprint(group.CreatedAt),
 	}
@@ -85,15 +92,26 @@ func CreateGroup(ctx context.Context, req *mcp.CallToolRequest, input *CreateGro
 	return nil, output, nil
 }
 
-func ListGroups(ctx context.Context, req *mcp.CallToolRequest, input *ListGroupsInput) (*mcp.CallToolResult, *ListGroupsOutput, error) {
-	output := &ListGroupsOutput{
+func ListGroups(ctx context.Context, req *mcp.CallToolRequest, input *ListGroupsInput) (result *mcp.CallToolResult, output *ListGroupsOutput, err error) {
+	start := logToolEnter("ListGroups", "")
+	defer func() {
+		logToolExit("ListGroups", start, err, result, output)
+	}()
+	output = &ListGroupsOutput{
 		Groups: groups.List(),
 	}
 	return nil, output, nil
 }
 
-func GetGroupInfo(ctx context.Context, req *mcp.CallToolRequest, input *GetGroupInfoInput) (*mcp.CallToolResult, *GetGroupInfoOutput, error) {
-	name := input.Name
+func GetGroupInfo(ctx context.Context, req *mcp.CallToolRequest, input *GetGroupInfoInput) (result *mcp.CallToolResult, output *GetGroupInfoOutput, err error) {
+	name := ""
+	if input != nil {
+		name = input.Name
+	}
+	start := logToolEnter("GetGroupInfo", "name=%q", name)
+	defer func() {
+		logToolExit("GetGroupInfo", start, err, result, output)
+	}()
 	if name == "" {
 		// Get the session so we can talk back to the client.
 		ss, _ := req.GetSession().(*mcp.ServerSession)
@@ -135,7 +153,7 @@ func GetGroupInfo(ctx context.Context, req *mcp.CallToolRequest, input *GetGroup
 		return nil, nil, fmt.Errorf("group(%s) not found; create it with CreateGroup", name)
 	}
 
-	output := &GetGroupInfoOutput{
+	output = &GetGroupInfoOutput{
 		GroupName:      group.Name,
 		CreatedAt:      fmt.Sprint(group.CreatedAt),
 		Names:          group.GetPeople(),

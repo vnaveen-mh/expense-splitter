@@ -37,9 +37,17 @@ func parseNames(value any) ([]string, error) {
 	}
 }
 
-func AddPeople(ctx context.Context, req *mcp.CallToolRequest, input *AddPeopleInput) (*mcp.CallToolResult, *AddPeopleOutput, error) {
-	groupName := input.GroupName
-	names := input.Names
+func AddPeople(ctx context.Context, req *mcp.CallToolRequest, input *AddPeopleInput) (result *mcp.CallToolResult, output *AddPeopleOutput, err error) {
+	groupName := ""
+	names := []string{}
+	if input != nil {
+		groupName = input.GroupName
+		names = input.Names
+	}
+	start := logToolEnter("AddPeople", "group_name=%q names=%d", groupName, len(names))
+	defer func() {
+		logToolExit("AddPeople", start, err, result, output)
+	}()
 	if len(names) == 0 || groupName == "" {
 		// Get the session so we can talk back to the client.
 		ss, _ := req.GetSession().(*mcp.ServerSession)
@@ -104,9 +112,8 @@ func AddPeople(ctx context.Context, req *mcp.CallToolRequest, input *AddPeopleIn
 		}
 	}
 
-	output := &AddPeopleOutput{
+	output = &AddPeopleOutput{
 		Msg: "success",
 	}
-
 	return nil, output, nil
 }

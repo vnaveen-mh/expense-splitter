@@ -26,14 +26,28 @@ type AddExpenseOutput struct {
 	Msg string `json:"msg" jsonschema_description:"success message"`
 }
 
-func AddExpense(ctx context.Context, req *mcp.CallToolRequest, input *AddExpenseInput) (*mcp.CallToolResult, *AddExpenseOutput, error) {
-	groupName := input.GroupName
-	amountStr := input.Amount
-	paidBy := input.PaidBy
-	expenseDescription := input.Description
-	splitMethod := input.SplitMethod
-	percentages := input.SplitPercentages
-	weights := input.SplitWeights
+func AddExpense(ctx context.Context, req *mcp.CallToolRequest, input *AddExpenseInput) (result *mcp.CallToolResult, output *AddExpenseOutput, err error) {
+	groupName := (*string)(nil)
+	amountStr := (*string)(nil)
+	paidBy := (*string)(nil)
+	expenseDescription := (*string)(nil)
+	splitMethod := (*string)(nil)
+	percentages := map[string]float64(nil)
+	weights := map[string]float64(nil)
+	if input != nil {
+		groupName = input.GroupName
+		amountStr = input.Amount
+		paidBy = input.PaidBy
+		expenseDescription = input.Description
+		splitMethod = input.SplitMethod
+		percentages = input.SplitPercentages
+		weights = input.SplitWeights
+	}
+	start := logToolEnter("AddExpense", "group_name=%s amount=%s paid_by=%s split_method=%s",
+		ptrString(groupName), ptrString(amountStr), ptrString(paidBy), ptrString(splitMethod))
+	defer func() {
+		logToolExit("AddExpense", start, err, result, output)
+	}()
 
 	if groupName == nil {
 		msg := "What's the group name?"
@@ -367,7 +381,7 @@ func AddExpense(ctx context.Context, req *mcp.CallToolRequest, input *AddExpense
 		SplitWeights:     weights,
 	})
 
-	output := &AddExpenseOutput{
+	output = &AddExpenseOutput{
 		Msg: "success",
 	}
 
